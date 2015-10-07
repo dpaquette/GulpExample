@@ -10,6 +10,8 @@ var gulp = require("gulp"),
     newer = require("gulp-newer"),
     imagemin = require("gulp-imagemin"),
     less = require("gulp-less"),
+    mainBowerFiles = require("main-bower-files"),
+    filter = require('gulp-filter'),
     project = require("./project.json");
 
 var paths = {
@@ -24,7 +26,7 @@ paths.minCss = paths.webroot + "css/site.min.css";
 paths.concatJsDest = paths.webroot + "js/site.js";
 paths.minJsDest = paths.webroot + "js/site.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
-
+paths.vendor = paths.webroot + "vendor/";
 paths.imagesDest = paths.webroot + "images/";
 paths.imagesSrc = "images/**/*.png";
 
@@ -64,6 +66,40 @@ gulp.task("images", function () {
         .pipe(newer(paths.imagesDest))
         .pipe(imagemin())
     .pipe(gulp.dest(paths.imagesDest));
+});
+
+gulp.task("bower", function () {
+
+    var filterByExtension = function (extension) {
+        return filter(function (file) {
+            return file.path.match(new RegExp('.' + extension + '$'));
+        });
+    };
+
+    var mainFiles = mainBowerFiles({
+        overrides: {
+            "bootstrap": {
+                "main": "dist/**/*.*"
+            }
+        }
+    });
+
+    var jsFilter = filter('**/*.js', { restore: true });
+    var cssFilter = filter('**/*.css', { restore: true });
+    var fontsFilter = filter(['**/*.woff*', '**/*.ttf', '**/*.svg' , '**/*.eot'], { restore: true });
+
+    return gulp.src(mainFiles)
+        .pipe(jsFilter)
+        .pipe(debug())
+        .pipe(gulp.dest(paths.webroot + "js/"))
+        .pipe(jsFilter.restore)
+        .pipe(cssFilter)
+        .pipe(debug())
+        .pipe(gulp.dest(paths.webroot + "css/"))
+        .pipe(cssFilter.restore)
+        .pipe(fontsFilter)
+        .pipe(debug())
+        .pipe(gulp.dest(paths.webroot + "fonts/"));
 });
 
 gulp.task("min", ["min:js", "min:css"]);
