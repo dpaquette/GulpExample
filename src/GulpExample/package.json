@@ -6,6 +6,7 @@
     "gulp-rename": "1.2.2",
     "gulp-newer": "0.5.1",
     "gulp-imagemin": "2.3.0",
+    "gulp-less": "3.0.3",
     "gulp-debug": "2.1.1",
     "gulp-concat": "2.5.2",    
     "gulp-cssmin": "0.1.7",
