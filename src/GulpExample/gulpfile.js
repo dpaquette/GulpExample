@@ -1,6 +1,7 @@
 ﻿/// <binding Clean='clean' />
 
 var gulp = require("gulp"),
+    rename = require("gulp-rename"),
     del = require("del"),
     debug = require("gulp-debug"),
     concat = require("gulp-concat"),
@@ -13,11 +14,12 @@ var paths = {
     webroot: "./" + project.webroot + "/"
 };
 
-paths.js = paths.webroot + "js/**/*.js";
-paths.minJs = paths.webroot + "js/**/*.min.js";
+paths.jsDest = paths.webroot + "js";
+paths.jsSrc = "scripts/**/*.js";
 paths.css = paths.webroot + "css/**/*.css";
 paths.minCss = paths.webroot + "css/**/*.min.css";
-paths.concatJsDest = paths.webroot + "js/site.min.js";
+paths.concatJsDest = paths.webroot + "js/site.js";
+paths.minJsDest = paths.webroot + "js/site.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
 
 paths.imagesDest = paths.webroot + "images/";
@@ -28,7 +30,7 @@ gulp.task("clean:images", function () {
     return del(paths.imagesDest + "/**/*.*");
 });
 gulp.task("clean:js", function () {
-    return del(paths.concatJsDest);
+    return del(paths.jsDest + "/**/*.*");
 });
 
 gulp.task("clean:css", function () {
@@ -37,10 +39,13 @@ gulp.task("clean:css", function () {
 
 gulp.task("clean", ["clean:js", "clean:css"]);
 
-gulp.task("min:js", function () {
-   return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
+gulp.task("min:js", ["clean:js"], function () {
+    return gulp.src([paths.jsSrc])
+        .pipe(gulp.dest(paths.jsDest))
         .pipe(concat(paths.concatJsDest))
+        .pipe(gulp.dest("."))
         .pipe(uglify())
+        .pipe(rename(paths.minJsDest))
         .pipe(gulp.dest("."));
 });
 
