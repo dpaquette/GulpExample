@@ -1,6 +1,4 @@
-﻿/// <binding Clean='clean' />
-
-var gulp = require("gulp"),
+﻿var gulp = require("gulp"),
     rename = require("gulp-rename"),
     del = require("del"),
     debug = require("gulp-debug"),
@@ -18,64 +16,69 @@ var paths = {
     webroot: "./" + project.webroot + "/"
 };
 
-paths.jsDest = paths.webroot + "js";
+//Application Javascript
 paths.jsSrc = "scripts/**/*.js";
-paths.lessSrc = "styles/site.less";
-paths.css = paths.webroot + "css/site.css"
-paths.minCss = paths.webroot + "css/site.min.css";
-paths.concatJsDest = paths.webroot + "js/site.js";
-paths.minJsDest = paths.webroot + "js/site.min.js";
-paths.concatCssDest = paths.webroot + "css/site.min.css";
-paths.vendor = paths.webroot + "vendor/";
-paths.imagesDest = paths.webroot + "images/";
-paths.imagesSrc = "images/**/*.png";
+paths.jsDest = paths.webroot + "js";
 
-gulp.task("clean:js", function () {
-    return del(paths.jsDest + "/**/*.*");
+gulp.task("clean:appjs", function () {
+    return del([paths.jsDest + "/**/*.*",
+                "!" + paths.jsVendorDest + "/**/*.*"]);
 });
 
-gulp.task("clean:css", function () {
-    return del([paths.css, paths.minCss]);
-});
-
-gulp.task("clean", ["clean:js", "clean:css"]);
-
-gulp.task("min:js", ["clean:js"], function () {
+gulp.task("appjs", ["clean:appjs"], function () {
     return gulp.src([paths.jsSrc])
         .pipe(gulp.dest(paths.jsDest))
-        .pipe(concat(paths.concatJsDest))
-        .pipe(gulp.dest("."))
+        .pipe(concat("site.js"))
+        .pipe(gulp.dest(paths.jsDest))
         .pipe(uglify())
-        .pipe(rename(paths.minJsDest))
-        .pipe(gulp.dest("."));
+        .pipe(rename("site.min.js"))
+        .pipe(gulp.dest(paths.jsDest));
+});
+
+
+
+//Stylesheets
+paths.lessSrc = "styles/site.less";
+paths.cssDest = paths.webroot + "css";
+
+gulp.task("clean:css", function () {
+    return del([paths.cssDest + "/site*.css"]);
 });
 
 gulp.task("less", ["clean:css"], function () {
     return gulp.src([paths.lessSrc])
          .pipe(less())
-         .pipe(rename(paths.css))
-         .pipe(gulp.dest("."))
+         .pipe(rename("site.css"))
+         .pipe(gulp.dest(paths.cssDest))
          .pipe(cssmin())
-         .pipe(rename(paths.minCss))
-         .pipe(gulp.dest("."));
+         .pipe(rename("site.min.css"))
+         .pipe(gulp.dest(paths.cssDest));
 });
 
-gulp.task("images", function () {
 
+//Optimize Images
+paths.imagesDest = paths.webroot + "images/";
+paths.imagesSrc = "images/**/*.png";
+
+gulp.task("images", function () {
     return gulp.src(paths.imagesSrc)
         .pipe(newer(paths.imagesDest))
         .pipe(imagemin())
     .pipe(gulp.dest(paths.imagesDest));
 });
 
-gulp.task("bower", function () {
 
-    var filterByExtension = function (extension) {
-        return filter(function (file) {
-            return file.path.match(new RegExp('.' + extension + '$'));
-        });
-    };
+//Third-Party and Vendor Packages
+paths.jsVendorDest = paths.jsDest + "/vendor";
+paths.vendorFontsDest = paths.webroot + "fonts";
 
+gulp.task("clean:vendorfiles", function () {
+    return del([paths.jsVendorDest + "/**/*.*",
+               paths.vendorFontsDest,
+               paths.cssDest + "/**/!(site)*.css"]);
+});
+
+gulp.task("bower", ["clean:vendorfiles"], function () {
     var mainFiles = mainBowerFiles({
         overrides: {
             "bootstrap": {
@@ -91,7 +94,7 @@ gulp.task("bower", function () {
     return gulp.src(mainFiles)
         .pipe(jsFilter)
         .pipe(debug())
-        .pipe(gulp.dest(paths.webroot + "js/"))
+        .pipe(gulp.dest(paths.jsVendorDest))
         .pipe(jsFilter.restore)
         .pipe(cssFilter)
         .pipe(debug())
@@ -102,4 +105,4 @@ gulp.task("bower", function () {
         .pipe(gulp.dest(paths.webroot + "fonts/"));
 });
 
-gulp.task("min", ["min:js", "min:css"]);
+gulp.task("default", ["bower", "appjs", "less", "images"]);
