@@ -12,6 +12,7 @@
     "gulp-cssmin": "0.1.7",
     "gulp-uglify": "1.2.0",
     "gulp-filter": "3.0.1",
+    "gulp-plumber": "1.0.1",
     "del": "2.0.2",
     "main-bower-files": "2.9.0"
   }

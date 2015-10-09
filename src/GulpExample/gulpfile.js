@@ -8,6 +8,7 @@
     newer = require("gulp-newer"),
     imagemin = require("gulp-imagemin"),
     less = require("gulp-less"),
+    plumber = require("gulp-plumber"),
     mainBowerFiles = require("main-bower-files"),
     filter = require('gulp-filter'),
     project = require("./project.json");
@@ -46,7 +47,7 @@ gulp.task("clean:css", function () {
 });
 
 gulp.task("less", ["clean:css"], function () {
-    return gulp.src([paths.lessSrc])
+    return gulp.src([paths.lessSrc])        
          .pipe(less())
          .pipe(rename("site.css"))
          .pipe(gulp.dest(paths.cssDest))
@@ -106,3 +107,21 @@ gulp.task("bower", ["clean:vendorfiles"], function () {
 });
 
 gulp.task("default", ["bower", "appjs", "less", "images"]);
+
+
+
+
+
+
+
+
+
+
+
+
+//.pipe(plumber({ errorHandler: handleError }))
+
+function handleError(err) {
+    console.log(err.toString());
+    this.emit('end');
+}
