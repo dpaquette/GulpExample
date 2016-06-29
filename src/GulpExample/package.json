@@ -1,19 +1,19 @@
 {
-  "name": "ASP.NET",
+  "name": "asp.net",
   "version": "0.0.0",
   "devDependencies": {
-    "gulp": "3.9.0",
+    "gulp": "3.9.1",
     "gulp-rename": "1.2.2",
-    "gulp-newer": "0.5.1",
-    "gulp-imagemin": "2.3.0",
-    "gulp-less": "3.0.3",
-    "gulp-debug": "2.1.1",
-    "gulp-concat": "2.5.2",    
+    "gulp-newer": "1.2.0",
+    "gulp-imagemin": "3.0.1",
+    "gulp-less": "3.1.0",
+    "gulp-debug": "2.1.2",
+    "gulp-concat": "2.6.0",    
     "gulp-cssmin": "0.1.7",
-    "gulp-uglify": "1.2.0",
-    "gulp-filter": "3.0.1",
-    "gulp-plumber": "1.0.1",
-    "del": "2.0.2",
-    "main-bower-files": "2.9.0"
+    "gulp-uglify": "1.5.3",
+    "gulp-filter": "4.0.0",
+    "gulp-plumber": "1.1.0",
+    "del": "2.2.0",
+    "main-bower-files": "2.13.1"
   }
 }

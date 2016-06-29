@@ -1,6 +1,7 @@
 ﻿@using GulpExample
 @using GulpExample.Models
-@using GulpExample.ViewModels.Account
-@using GulpExample.ViewModels.Manage
-@using Microsoft.AspNet.Identity
-@addTagHelper "*, Microsoft.AspNet.Mvc.TagHelpers"
+@using GulpExample.Models.AccountViewModels
+@using GulpExample.Models.ManageViewModels
+@using Microsoft.AspNetCore.Identity
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration TelemetryConfiguration

@@ -14,7 +14,7 @@
     project = require("./project.json");
 
 var paths = {
-    webroot: "./" + project.webroot + "/"
+    webroot: "./wwwroot/"
 };
 
 //Application Javascript
