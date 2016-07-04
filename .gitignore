@@ -11,6 +11,9 @@ PublishProfiles/
 bower_components/
 node_modules/
 **/wwwroot/lib/
+**/wwwroot/fonts/
+**/wwwroot/js/
+**/wwwroot/css/
 debugSettings.json
 project.lock.json
 *.user
